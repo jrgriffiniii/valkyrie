@@ -22,6 +22,7 @@
 //= require bootstrap/affix
 //= require file_manager
 //= require boot
+//= require jquery-fileupload
 
 //= require_tree .
 
