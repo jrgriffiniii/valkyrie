@@ -21,17 +21,36 @@ Rails.application.config.to_prepare do
     :index_solr
   )
 
+  business_logic_persister = BusinessLogicPersister.new(
+    ParentCleanupPersister,
+    AppendingPersister
+  )
+
   Valkyrie::Adapter.register(
-    AdapterContainer.new(persister:
-      ParentCleanupPersister.new(
-        AppendingPersister.new(
+    AdapterContainer.new(
+      persister:
+        business_logic_persister.new(
           CompositePersister.new(
             Valkyrie.config.adapter.persister,
             Valkyrie::Adapter.find(:index_solr).persister
           )
-        )
-      ),
-                         query_service: Valkyrie.config.adapter.query_service),
+        ),
+      query_service: Valkyrie.config.adapter.query_service
+    ),
     :indexing_persister
   )
+end
+
+class BusinessLogicPersister
+  attr_reader :persisters
+  def initialize(*persisters)
+    @persisters = persisters
+  end
+
+  def new(persister)
+    persisters.each do |p|
+      persister = p.new(persister)
+    end
+    persister
+  end
 end
