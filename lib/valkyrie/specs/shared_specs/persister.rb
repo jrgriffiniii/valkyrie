@@ -5,7 +5,7 @@ RSpec.shared_examples 'a Valkyrie::Persister' do
       defined? persister
     class CustomResource
       include Valkyrie::ActiveModel
-      attribute :id
+      attribute :id, Valkyrie::ID::Attribute
       attribute :title
       attribute :member_ids
     end

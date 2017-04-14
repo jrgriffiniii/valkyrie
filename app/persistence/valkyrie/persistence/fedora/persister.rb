@@ -65,7 +65,7 @@ module Valkyrie::Persistence::Fedora
       end
 
       def member_ids
-        model.attributes[:member_ids]
+        Array.wrap(model.attributes[:member_ids]).map(&:to_s)
       end
 
       def resource_factory
