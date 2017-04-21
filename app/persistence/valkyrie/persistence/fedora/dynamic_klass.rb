@@ -8,8 +8,8 @@ module Valkyrie::Persistence::Fedora
     def self.cast_attributes(orm_object)
       Hash[
         orm_object.attributes.map do |k, v|
-          if v.kind_of?(::ActiveTriples::Relation)
-            v.rel_args = {cast: false}
+          if v.is_a?(::ActiveTriples::Relation)
+            v.rel_args = { cast: false }
             v = v.to_a
           end
           [k, v]
