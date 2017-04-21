@@ -35,12 +35,12 @@ RSpec.shared_examples 'a Valkyrie::Persister' do
 
   it "can store Valkyrie::Ids" do
     shared_title = persister.save(model: resource_class.new(id: "test"))
-    book = persister.save(model: resource_class.new(title: [shared_title.id]))
+    book = persister.save(model: resource_class.new(title: [shared_title.id, "test"]))
 
     reloaded = query_service.find_by(id: book.id)
 
-    expect(reloaded.title).to eq [shared_title.id]
-    expect([shared_title.id]).to eq reloaded.title
+    expect(reloaded.title).to contain_exactly shared_title.id, "test"
+    expect([shared_title.id, "test"]).to contain_exactly(*reloaded.title)
   end
 
   it "can order members" do
