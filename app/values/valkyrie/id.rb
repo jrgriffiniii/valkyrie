@@ -26,6 +26,10 @@ module Valkyrie
     end
     alias == eql?
 
+    def to_uri
+      ::RDF::URI(ActiveFedora::Base.id_to_uri(id))
+    end
+
     protected
 
       def state

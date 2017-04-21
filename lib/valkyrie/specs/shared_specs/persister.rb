@@ -32,6 +32,16 @@ RSpec.shared_examples 'a Valkyrie::Persister' do
 
     expect(reloaded.title).to contain_exactly "Test1", RDF::Literal.new("Test", language: :fr)
   end
+  
+  it "can store Valkyrie::Ids" do
+    shared_title = persister.save(model: resource_class.new(id: "test"))
+    book = persister.save(model: resource_class.new(title: [shared_title.id]))
+
+    reloaded = query_service.find_by(id: book.id)
+
+    expect(reloaded.title).to eq [shared_title.id]
+    expect([shared_title.id]).to eq reloaded.title
+  end
 
   it "can order members" do
     book = persister.save(model: resource_class.new)
