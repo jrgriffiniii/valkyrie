@@ -13,21 +13,39 @@ module Valkyrie::Persistence::ActiveFedora::ORM
     property :internal_model, predicate: ::RDF::URI("http://test.com/internal_model"), multiple: false
     property :file_identifiers, predicate: ::RDF::URI("http://test.com/file_identifiers")
     property :label, predicate: ::RDF::URI("http://test.com/label")
+<<<<<<< 1f4dba0f4226a1a625f98b59e4527a6488050a08
     property :mime_type, predicate: ::RDF::URI("http://test.com/mime_type")
     property :original_filename, predicate: ::RDF::URI("http://test.com/original_filename")
     property :use, predicate: ::RDF::URI("http://test.com/use")
+=======
+>>>>>>> Add one-level deep support for AF.
     property :nested_resource, predicate: ::RDF::URI("http://test.com/nested_resource")
   end
   class NestedResource < ActiveTriples::Resource
     def initialize(uri = RDF::Node.new, _parent = ActiveTriples::Resource.new)
       uri = if uri.try(:node?)
+<<<<<<< 1f4dba0f4226a1a625f98b59e4527a6488050a08
               RDF::URI("#nested_resource_#{uri.to_s.gsub('_:', '')}")
+=======
+              RDF::URI("#timespan_#{uri.to_s.gsub('_:', '')}")
+>>>>>>> Add one-level deep support for AF.
             elsif uri.to_s.include?('#')
               RDF::URI(uri)
             end
       super
     end
 
+<<<<<<< 1f4dba0f4226a1a625f98b59e4527a6488050a08
+=======
+    def persisted?
+      !new_record?
+    end
+
+    def new_record?
+      id.start_with?('#')
+    end
+
+>>>>>>> Add one-level deep support for AF.
     # configure type: ::RDF::URI("http://test.com/nested_resource_type")
     apply_schema Schema
     property :read_groups, predicate: ::RDF::URI("http://test.com/read_groups")
