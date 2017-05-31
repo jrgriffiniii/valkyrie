@@ -39,7 +39,7 @@ RSpec.shared_examples 'a Valkyrie::Persister' do |*flags|
     book3 = persister.save(model: resource_class.new(nested_resource: [book2, "Alabama"]))
 
     reloaded = query_service.find_by(id: book3.id)
-    expect(reloaded.nested_resource.map{|x| x.try(:title)}).to include ["Nested"]
+    expect(reloaded.nested_resource.map { |x| x.try(:title) }).to include ["Nested"]
     expect(reloaded.nested_resource).to include "Alabama"
   end
 
