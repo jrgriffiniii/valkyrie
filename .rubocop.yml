@@ -53,3 +53,6 @@ RSpec/DescribeClass:
     - 'spec/routing/**/*'
     - 'spec/inputs/**/*'
     - 'spec/requests/**/*'
+RSpec/NamedSubject:
+  Exclude:
+    - 'spec/models/mets_document_spec.rb'

@@ -1,4 +1,13 @@
 # frozen_string_literal: true
+class Node < Valkyrie::Model
+  attribute :label, Valkyrie::Types::Set
+  attribute :proxy, Valkyrie::Types::ID.optional
+  attribute :nodes, Valkyrie::Types::Array.member(Node)
+end
+class Structure < Valkyrie::Model
+  attribute :label, Valkyrie::Types::Set
+  attribute :nodes, Valkyrie::Types::Array.member(Node)
+end
 class Book < Valkyrie::Model
   include Valkyrie::Model::AccessControls
   attribute :id, Valkyrie::Types::ID.optional
@@ -12,4 +21,6 @@ class Book < Valkyrie::Model
   attribute :thumbnail_id, Valkyrie::Types::Set
   attribute :representative_id, Valkyrie::Types::Set
   attribute :start_canvas, Valkyrie::Types::Set
+  attribute :structure, Valkyrie::Types::Array.member(Structure.optional).optional
+  attribute :source_metadata_identifier, Valkyrie::Types::Set
 end

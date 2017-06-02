@@ -1,5 +1,5 @@
 <%= simple_form_for @form do |f| %>
-  <% (@form.class.fields - [:member_ids]).each do |field| %>
+  <% (@form.class.fields - [:member_ids, :structure]).each do |field| %>
     <%= render_edit_field_partial(field, f: f) %>
   <% end %>
   <% if @form.append_id.present? %>

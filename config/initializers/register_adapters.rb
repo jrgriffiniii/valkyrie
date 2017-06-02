@@ -41,13 +41,14 @@ Rails.application.config.to_prepare do
     AppendingPersister
   )
 
+  indexing_persister =
+    CompositePersister.new(
+      Valkyrie.config.adapter.persister,
+      Valkyrie::Adapter.find(:index_solr).persister
+    )
+
   Valkyrie::Adapter.register(
-    Valkyrie::AdapterContainer.new(persister: persister_list.new(
-      CompositePersister.new(
-        Valkyrie.config.adapter.persister,
-        Valkyrie::Adapter.find(:index_solr).persister
-      )
-    ),
+    Valkyrie::AdapterContainer.new(persister: persister_list.new(indexing_persister),
                                    query_service: Valkyrie.config.adapter.query_service),
     :indexing_persister
   )
