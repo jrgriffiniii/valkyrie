@@ -6,8 +6,8 @@ RSpec.describe DownloadsController do
   before do
     sign_in user if user
   end
-  let(:persister) { Valkyrie.config.adapter.persister }
-  let(:storage_adapter) { Valkyrie.config.storage_adapter }
+  let(:persister) { Sleipnir.config.adapter.persister }
+  let(:storage_adapter) { Sleipnir.config.storage_adapter }
   let(:file) { fixture_file_upload('files/example.tif', 'image/tiff') }
 
   describe "GET /downloads/:id" do

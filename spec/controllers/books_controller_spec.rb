@@ -20,23 +20,23 @@ RSpec.describe BooksController do
       post :create, params: { book: { title: ["Test"], files: [file] } }
 
       id = response.location.gsub("http://test.host/catalog/", "").gsub("%2F", "/").gsub(/^id-/, "")
-      query_service = Valkyrie.config.adapter.query_service
-      book = query_service.find_by(id: Valkyrie::ID.new(id))
+      query_service = Sleipnir.config.adapter.query_service
+      book = query_service.find_by(id: Sleipnir::ID.new(id))
       expect(book.member_ids).not_to be_blank
       file_set = query_service.find_members(model: book).first
       files = query_service.find_members(model: file_set)
-      file = files.find { |x| x.use.include?(Valkyrie::Vocab::PCDMUse.OriginalFile) }
+      file = files.find { |x| x.use.include?(Sleipnir::Vocab::PCDMUse.OriginalFile) }
 
       expect(file.file_identifiers).not_to be_empty
       expect(file.label).to contain_exactly "example.tif"
       expect(file.original_filename).to contain_exactly "example.tif"
       expect(file.mime_type).to contain_exactly "image/tiff"
-      expect(file.use).to contain_exactly Valkyrie::Vocab::PCDMUse.OriginalFile
+      expect(file.use).to contain_exactly Sleipnir::Vocab::PCDMUse.OriginalFile
 
       # Generate derivatives
-      derivative = files.find { |x| x.use.include?(Valkyrie::Vocab::PCDMUse.ServiceFile) }
+      derivative = files.find { |x| x.use.include?(Sleipnir::Vocab::PCDMUse.ServiceFile) }
       expect(derivative).to be_present
-      expect(derivative.use).to include Valkyrie::Vocab::PCDMUse.ThumbnailImage
+      expect(derivative.use).to include Sleipnir::Vocab::PCDMUse.ThumbnailImage
     end
   end
 

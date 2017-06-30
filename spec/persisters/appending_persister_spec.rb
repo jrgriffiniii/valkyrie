@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 require 'rails_helper'
-require 'valkyrie/specs/shared_specs'
+require 'sleipnir/specs/shared_specs'
 
 RSpec.describe AppendingPersister do
-  let(:persister) { described_class.new(Persister.new(adapter: Valkyrie::Persistence::Memory::Adapter.new)) }
-  it_behaves_like "a Valkyrie::Persister"
+  let(:persister) { described_class.new(Persister.new(adapter: Sleipnir::Persistence::Memory::Adapter.new)) }
+  it_behaves_like "a Sleipnir::Persister"
 
   it "appends when given a form with an append_id" do
     parent = persister.save(model: Book.new)

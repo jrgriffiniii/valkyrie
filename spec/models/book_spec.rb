@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 require 'rails_helper'
-require 'valkyrie/specs/shared_specs'
+require 'sleipnir/specs/shared_specs'
 
 RSpec.describe Book do
   subject(:book) { described_class.new }
   let(:model_klass) { described_class }
-  it_behaves_like "a Valkyrie::Model"
+  it_behaves_like "a Sleipnir::Model"
 
   describe "#title" do
     it "is an accessor" do
@@ -56,7 +56,7 @@ RSpec.describe Book do
   describe "#id" do
     it "can be set to a string" do
       book.id = "test"
-      expect(book.id).to eq Valkyrie::ID.new("test")
+      expect(book.id).to eq Sleipnir::ID.new("test")
     end
   end
 

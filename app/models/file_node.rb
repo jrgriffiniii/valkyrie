@@ -1,12 +1,12 @@
 # frozen_string_literal: true
-class FileNode < Valkyrie::Model
-  include Valkyrie::Model::AccessControls
-  attribute :id, Valkyrie::Types::ID.optional
-  attribute :label, Valkyrie::Types::Set
-  attribute :mime_type, Valkyrie::Types::Set
-  attribute :original_filename, Valkyrie::Types::Set
-  attribute :file_identifiers, Valkyrie::Types::Set
-  attribute :use, Valkyrie::Types::Set
+class FileNode < Sleipnir::Model
+  include Sleipnir::Model::AccessControls
+  attribute :id, Sleipnir::Types::ID.optional
+  attribute :label, Sleipnir::Types::Set
+  attribute :mime_type, Sleipnir::Types::Set
+  attribute :original_filename, Sleipnir::Types::Set
+  attribute :file_identifiers, Sleipnir::Types::Set
+  attribute :use, Sleipnir::Types::Set
 
   def title
     label

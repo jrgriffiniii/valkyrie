@@ -6,6 +6,26 @@ GIT
     devise-guests (0.6.0)
       devise
 
+PATH
+  remote: ./sleipnir/
+  specs:
+    sleipnir (0.1.0)
+      active-fedora
+      active-triples
+      activemodel
+      activerecord
+      activesupport
+      draper
+      dry-struct
+      dry-types
+      hydra-access-controls
+      hydra-derivatives
+      json-ld
+      pg
+      rdf
+      reform
+      reform-rails
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -572,6 +592,7 @@ DEPENDENCIES
   shoulda-matchers
   simple_form
   simplecov
+  sleipnir!
   solr_wrapper (>= 0.3)
   spring
   spring-commands-rspec

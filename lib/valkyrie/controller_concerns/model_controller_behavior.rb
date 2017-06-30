@@ -37,7 +37,7 @@ module Valkyrie::ControllerConcerns
       if @form.validate(model_params)
         @form.sync
         obj = persister.save(model: @form)
-        redirect_to solr_document_path(id: solr_adapter.resource_factory.from_model(obj).id)
+        redirect_to solr_document_path(id: solr_adapter.resource_factory.from_model(obj)[:id])
       else
         render :edit
       end
@@ -64,19 +64,19 @@ module Valkyrie::ControllerConcerns
       end
 
       def find_book(id)
-        QueryService.find_by(id: Valkyrie::ID.new(id.to_s))
+        QueryService.find_by(id: Sleipnir::ID.new(id.to_s))
       end
 
       def persister
-        Valkyrie::Adapter.find(:indexing_persister).persister
+        Sleipnir::Adapter.find(:indexing_persister).persister
       end
 
       def query_service
-        Valkyrie::Adapter.find(:indexing_persister).query_service
+        Sleipnir::Adapter.find(:indexing_persister).query_service
       end
 
       def solr_adapter
-        Valkyrie::Adapter.find(:index_solr)
+        Sleipnir::Adapter.find(:index_solr)
       end
   end
 end

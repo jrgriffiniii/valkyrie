@@ -4,7 +4,7 @@ require 'benchmark'
 num_children = 100
 
 # Pop off the indexing_persister  so we don't test it
-Valkyrie::Adapter.adapters.to_a.each do |adapter_name, adapter|
+Sleipnir::Adapter.adapters.to_a.each do |adapter_name, adapter|
   Benchmark.bm do |bench|
     parent = Book.new
     children = nil

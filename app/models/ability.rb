@@ -3,20 +3,20 @@ class Ability
   include Hydra::Ability
 
   def custom_permissions
-    can :manage, Valkyrie::Model if current_user.admin?
+    can :manage, Sleipnir::Model if current_user.admin?
     alias_action :file_manager, to: :update
   end
 
   def read_permissions
     super
-    can :read, Valkyrie::Model do |obj|
+    can :read, Sleipnir::Model do |obj|
       valkyrie_test_read(obj) || valkyrie_test_edit(obj)
     end
   end
 
   def edit_permissions
     super
-    can [:edit, :update, :destroy], Valkyrie::Model do |obj|
+    can [:edit, :update, :destroy], Sleipnir::Model do |obj|
       valkyrie_test_edit(obj)
     end
   end

@@ -68,7 +68,7 @@ module Valkyrie::Persistence::ActiveFedora
           end
 
           def file_identifiers
-            solr_hit.fetch("file_identifiers_ssim", []).map { |x| Valkyrie::ID.new(x) }
+            solr_hit.fetch("file_identifiers_ssim", []).map { |x| Sleipnir::ID.new(x) }
           end
 
           private

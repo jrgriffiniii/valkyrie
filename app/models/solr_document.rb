@@ -20,7 +20,7 @@ class SolrDocument
   def member_ids
     fetch(:member_ids_ssim, []).map do |id|
       if id.start_with?("id-")
-        Valkyrie::ID.new(id.gsub(/^id-/, ''))
+        Sleipnir::ID.new(id.gsub(/^id-/, ''))
       else
         id
       end
@@ -32,7 +32,7 @@ class SolrDocument
   end
 
   def model_id
-    Valkyrie::ID.new(id.gsub(/^id-/, ''))
+    Sleipnir::ID.new(id.gsub(/^id-/, ''))
   end
 
   def resource

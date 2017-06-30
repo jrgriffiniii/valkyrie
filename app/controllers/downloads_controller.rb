@@ -8,10 +8,10 @@ class DownloadsController < ApplicationController
 
   class FileWithMetadata < Dry::Struct
     delegate :size, :read, :stream, to: :file
-    attribute :id, Valkyrie::Types::Any
-    attribute :file, Valkyrie::Types::Any
-    attribute :mime_type, Valkyrie::Types::SingleValuedString
-    attribute :original_name, Valkyrie::Types::SingleValuedString
+    attribute :id, Sleipnir::Types::Any
+    attribute :file, Sleipnir::Types::Any
+    attribute :mime_type, Sleipnir::Types::SingleValuedString
+    attribute :original_name, Sleipnir::Types::SingleValuedString
   end
 
   def load_file
@@ -46,14 +46,14 @@ class DownloadsController < ApplicationController
   end
 
   def asset
-    @asset ||= query_service.find_by(id: Valkyrie::ID.new(params[:id]))
+    @asset ||= query_service.find_by(id: Sleipnir::ID.new(params[:id]))
   end
 
   def query_service
-    Valkyrie.config.adapter.query_service
+    Sleipnir.config.adapter.query_service
   end
 
   def storage_adapter
-    Valkyrie::FileRepository
+    Sleipnir::FileRepository
   end
 end

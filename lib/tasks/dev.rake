@@ -29,6 +29,13 @@ if Rails.env.development? || Rails.env.test?
         end
       end
     end
+    desc "Cleanup test servers"
+    task :clean_test do
+      SolrWrapper.instance(managed: true, verbose: true, port: 8984, instance_dir: 'tmp/blacklight-core-test', persist: false).remove_instance_dir!
+      SolrWrapper.instance(managed: true, verbose: true, port: 8985, instance_dir: 'tmp/hydra-test', persist: false).remove_instance_dir!
+      FcrepoWrapper.default_instance(managed: true, verbose: true, port: 8988, enable_jms: false, fcrepo_home_dir: "fcrepo4-test-data").remove_instance_dir!
+      puts "Cleaned up test solr & fedora servers."
+    end
     task :development do
       SolrWrapper.wrap(managed: true, verbose: true, port: 8983, instance_dir: 'tmp/blacklight-core', persist: false) do |solr|
         solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "config").to_s) do

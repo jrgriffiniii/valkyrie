@@ -2,7 +2,7 @@
 module Valkyrie::Persistence::ActiveFedora
   class DynamicKlass
     def self.new(orm_object)
-      orm_object.internal_model.constantize.new(cast_attributes(orm_object).merge(member_ids: orm_object.ordered_member_ids.map { |x| Valkyrie::ID.new(x) }))
+      orm_object.internal_model.constantize.new(cast_attributes(orm_object).merge(member_ids: orm_object.ordered_member_ids.map { |x| Sleipnir::ID.new(x) }))
     end
 
     def self.cast_attributes(orm_object)
@@ -25,10 +25,10 @@ module Valkyrie::Persistence::ActiveFedora
       )
     end
 
-    class ActiveFedoraMapper < ValueMapper
+    class ActiveFedoraMapper < ::Sleipnir::ValueMapper
     end
 
-    class NestedResourceValue < ValueMapper
+    class NestedResourceValue < ::Sleipnir::ValueMapper
       ActiveFedoraMapper.register(self)
       def self.handles?(value)
         value.is_a?(ActiveTriples::Relation) && value.first.is_a?(ActiveTriples::Resource) && !value.first.empty?
@@ -41,7 +41,7 @@ module Valkyrie::Persistence::ActiveFedora
       end
     end
 
-    class ActiveTriplesRelationValue < ValueMapper
+    class ActiveTriplesRelationValue < ::Sleipnir::ValueMapper
       ActiveFedoraMapper.register(self)
       def self.handles?(value)
         value.is_a?(ActiveTriples::Relation)
@@ -53,7 +53,7 @@ module Valkyrie::Persistence::ActiveFedora
       end
     end
 
-    class EnumerableValue < ValueMapper
+    class EnumerableValue < ::Sleipnir::ValueMapper
       ActiveFedoraMapper.register(self)
 
       def self.handles?(value)
@@ -67,7 +67,7 @@ module Valkyrie::Persistence::ActiveFedora
       end
     end
 
-    class LocalIDValue < ValueMapper
+    class LocalIDValue < ::Sleipnir::ValueMapper
       ActiveFedoraMapper.register(self)
 
       def self.handles?(value)
@@ -75,19 +75,19 @@ module Valkyrie::Persistence::ActiveFedora
       end
 
       def result
-        Valkyrie::ID.new(ActiveFedora::Base.uri_to_id(value))
+        Sleipnir::ID.new(ActiveFedora::Base.uri_to_id(value))
       end
     end
 
-    class ExternalIDValue < ValueMapper
+    class ExternalIDValue < ::Sleipnir::ValueMapper
       ActiveFedoraMapper.register(self)
 
       def self.handles?(value)
-        value.is_a?(::RDF::Literal) && value.datatype == RDF::URI("http://example.com/valkyrie_id")
+        value.is_a?(::RDF::Literal) && value.datatype == RDF::URI("http://example.com/sleipnir_id")
       end
 
       def result
-        Valkyrie::ID.new(value.to_s)
+        Sleipnir::ID.new(value.to_s)
       end
     end
   end

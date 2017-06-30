@@ -10,7 +10,7 @@ class ImageDerivativeService
     end
 
     def use=(use)
-      @use = Array(use) + [Valkyrie::Vocab::PCDMUse.ServiceFile]
+      @use = Array(use) + [Sleipnir::Vocab::PCDMUse.ServiceFile]
     end
 
     def new(file_set)
@@ -18,7 +18,7 @@ class ImageDerivativeService
     end
 
     def original_file(file_set)
-      members(file_set).find { |x| x.use.include?(Valkyrie::Vocab::PCDMUse.OriginalFile) }
+      members(file_set).find { |x| x.use.include?(Sleipnir::Vocab::PCDMUse.OriginalFile) }
     end
 
     def members(file_set)
@@ -30,11 +30,11 @@ class ImageDerivativeService
     end
 
     class ImageConfig < Dry::Struct
-      attribute :width, Valkyrie::Types::Int
-      attribute :height, Valkyrie::Types::Int
-      attribute :format, Valkyrie::Types::String
-      attribute :mime_type, Valkyrie::Types::String
-      attribute :output_name, Valkyrie::Types::String
+      attribute :width, Sleipnir::Types::Int
+      attribute :height, Sleipnir::Types::Int
+      attribute :format, Sleipnir::Types::String
+      attribute :mime_type, Sleipnir::Types::String
+      attribute :output_name, Sleipnir::Types::String
     end
 
     class StorageSolution
@@ -94,7 +94,7 @@ class ImageDerivativeService
   end
 
   def file_object
-    @file_object ||= Valkyrie::FileRepository.find_by(id: original_file.file_identifiers[0])
+    @file_object ||= Sleipnir::FileRepository.find_by(id: original_file.file_identifiers[0])
   end
 
   def temporary_output

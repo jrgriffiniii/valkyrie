@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 require 'rails_helper'
-require 'valkyrie/specs/shared_specs'
+require 'sleipnir/specs/shared_specs'
 
 RSpec.describe Valkyrie::Persistence::ActiveFedora::QueryService do
   let(:adapter) { Valkyrie::Persistence::ActiveFedora::Adapter }
   let(:persister) { adapter.persister }
   let(:query_service) { adapter.query_service }
-  it_behaves_like "a Valkyrie query provider"
+  it_behaves_like "a Sleipnir query provider"
 
   describe "find_members" do
     context "when they come from solr" do

@@ -29,8 +29,8 @@ RSpec.describe CollectionsController do
       post :create, params: { collection: { title: ["Test"] } }
 
       id = response.location.gsub("http://test.host/catalog/", "").gsub("%2F", "/").gsub(/^id-/, "")
-      query_service = Valkyrie.config.adapter.query_service
-      collection = query_service.find_by(id: Valkyrie::ID.new(id))
+      query_service = Sleipnir.config.adapter.query_service
+      collection = query_service.find_by(id: Sleipnir::ID.new(id))
       expect(collection.title).to eq ["Test"]
     end
   end

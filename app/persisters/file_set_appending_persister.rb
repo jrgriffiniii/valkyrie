@@ -16,7 +16,7 @@ class FileSetAppendingPersister
       file = repository.upload(file: file, model: file_node)
       file_node.file_identifiers = file_node.file_identifiers + [file.id]
       persister.save(model: file_node)
-      Valkyrie::DerivativeService.for(file_set).create_derivatives
+      Sleipnir::DerivativeService.for(file_set).create_derivatives
       model.member_ids = model.member_ids + [file_set.id]
     end
     model.try(:sync)
@@ -24,7 +24,7 @@ class FileSetAppendingPersister
   end
 
   def create_node(file)
-    persister.save(model: node_factory.new(label: file.original_filename, original_filename: file.original_filename, mime_type: file.content_type, use: Valkyrie::Vocab::PCDMUse.OriginalFile))
+    persister.save(model: node_factory.new(label: file.original_filename, original_filename: file.original_filename, mime_type: file.content_type, use: Sleipnir::Vocab::PCDMUse.OriginalFile))
   end
 
   def create_file_set(file_node)

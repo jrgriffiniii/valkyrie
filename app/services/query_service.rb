@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class QueryService
   class_attribute :adapter
-  self.adapter = Valkyrie.config.adapter
+  self.adapter = Sleipnir.config.adapter
   class << self
     delegate :find_all, :find_by, :find_members, to: :default_adapter
 
