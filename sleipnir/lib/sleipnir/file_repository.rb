@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 module Sleipnir
+  require 'sleipnir/file_repository/hardlink_repository'
   class FileRepository
     class_attribute :repositories
     self.repositories = {}

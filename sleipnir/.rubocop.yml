@@ -26,3 +26,5 @@ Style/PredicateName:
   Exclude:
     - "lib/sleipnir/model.rb"
     - "lib/sleipnir/persistence/solr/queries/default_paginator.rb"
+Lint/UnusedMethodArgument:
+  AllowUnusedKeywordArguments: true
