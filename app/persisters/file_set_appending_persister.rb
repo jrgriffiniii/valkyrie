@@ -34,12 +34,17 @@ class FileSetAppendingPersister
     end
 
     def append(file)
-      file_node = persister.save(model: node_factory.new(label: file.original_filename))
+      file_node = create_node(file)
       file_set = build_file_set(file_node, file)
       file_identifier = repository.upload(file: file, model: file_node)
       file_node.file_identifiers = file_node.file_identifiers + [file_identifier.id]
       persister.save(model: file_node)
+      Valkyrie::DerivativeService.for(file_set).create_derivatives
       model.member_ids = model.member_ids + [file_set.id]
+    end
+
+    def create_node(file)
+      persister.save(model: node_factory.new(label: file.original_filename, original_filename: file.original_filename, mime_type: file.content_type, use: Valkyrie::Vocab::PCDMUse.OriginalFile))
     end
 
     def build_file_set(file_node, file)
