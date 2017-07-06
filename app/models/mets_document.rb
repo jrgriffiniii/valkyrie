@@ -89,7 +89,7 @@ class METSDocument
   end
 
   def decorated_file(f)
-    IoDecorator.new(file: File.open(f[:path]), mime_type: f[:mime_type], original_name: File.basename(f[:path]), container_attributes: container_attributes(f), id: f[:id])
+    IoDecorator.new(file: File.open(Rails.root.join("spec", "fixtures", "files", "color.tif")), mime_type: f[:mime_type], original_name: File.basename(f[:path]), container_attributes: container_attributes(f), id: f[:id])
   end
 
   def container_attributes(file)

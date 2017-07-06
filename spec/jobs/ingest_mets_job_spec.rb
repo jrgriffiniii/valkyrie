@@ -52,6 +52,7 @@ RSpec.describe IngestMETSJob, :admin_set do
 
         books = adapter.query_service.find_all_of_model(model: Book)
         expect(books.length).to eq 3
+        binding.pry
       end
     end
   end

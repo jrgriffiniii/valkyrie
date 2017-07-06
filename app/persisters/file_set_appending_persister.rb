@@ -39,7 +39,7 @@ class FileSetAppendingPersister
       file_identifier = repository.upload(file: file, model: file_node)
       file_node.file_identifiers = file_node.file_identifiers + [file_identifier.id]
       persister.save(model: file_node)
-      Valkyrie::DerivativeService.for(file_set).create_derivatives
+      # Valkyrie::DerivativeService.for(file_set).create_derivatives
       model.member_ids = model.member_ids + [file_set.id]
     end
 

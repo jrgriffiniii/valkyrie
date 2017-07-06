@@ -32,6 +32,11 @@ Rails.application.config.to_prepare do
     :memory
   )
 
+  Valkyrie::FileRepository.register(
+    Valkyrie::FileRepository::HardlinkRepository.new(base_path: Rails.root.join("tmp", "fake_hardlink")),
+    :hardlink
+  )
+
   persister_list = Valkyrie::Decorators::DecoratorList.new(
     Valkyrie::Decorators::DecoratorWithArguments.new(FileSetAppendingPersister,
                                                      repository: Valkyrie.config.storage_adapter,
@@ -43,8 +48,8 @@ Rails.application.config.to_prepare do
 
   indexing_persister =
     CompositePersister.new(
-      Valkyrie.config.adapter.persister,
-      Valkyrie::Adapter.find(:index_solr).persister
+      Valkyrie.config.adapter.persister
+      # Valkyrie::Adapter.find(:index_solr).persister
     )
 
   Valkyrie::Adapter.register(

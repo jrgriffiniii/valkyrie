@@ -1,6 +1,6 @@
 development:
   adapter: postgres
-  storage_adapter: disk
+  storage_adapter: hardlink
 
 test:
   adapter: memory
