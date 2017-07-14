@@ -20,6 +20,7 @@ PATH
       dry-types
       hydra-access-controls
       hydra-derivatives
+      hydra-works
       json-ld
       pg
       rdf

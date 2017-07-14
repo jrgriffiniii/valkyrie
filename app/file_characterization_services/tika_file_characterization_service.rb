@@ -4,27 +4,31 @@
 # defines the Apache Tika based characterization service a ValkyrieFileCharacterization service
 # @since 0.1.0
 class TikaFileCharacterizationService
-  attr_reader :file_node, :persister
-  def initialize(file_node:, persister:)
-    @file_node = file_node
-    @persister = persister
+  attr_reader :file, :storage_adapter
+  def initialize(file:, storage_adapter:)
+    @file = file
+    @storage_adapter = storage_adapter
   end
 
-  # characterizes the file_node passed into this service
-  # Default options are:
-  #   save: true
-  # @param save [Boolean] should the persister save the file_node after Characterization
+  # characterizes the file passed into this service
   # @return [FileNode]
-  # @example characterize a file and persist the changes by default
-  #   Valkyrie::FileCharacterizationService.for(file_node, persister).characterize
-  # @example characterize a file and do not persist the changes
-  #   Valkyrie::FileCharacterizationService.for(file_node, persister).characterize(save: false)
-  def characterize(save: true)
+  # @example characterize a file and persist the changes
+  #   Valkyrie::FileCharacterizationService.for(file, storage_adapter).characterize
+  def characterize
     result = JSON.parse(json_output).last
-    @file_characterization_attributes = FileCharacterizationAttributes.new(width: result['tiff:ImageWidth'], height: result['tiff:ImageLength'], mime_type: result['Content-Type'], checksum: checksum)
-    @file_node = @file_node.new(@file_characterization_attributes.to_h)
-    @persister.save(resource: @file_node) if save
-    @file_node
+    file_characterization_attributes = FileCharacterizationAttributes.new(old_resource.to_h.except(:internal_resource).merge(
+                                                                            width: result['tiff:ImageWidth'],
+                                                                            height: result['tiff:ImageLength'],
+                                                                            mime_type: result['Content-Type'],
+                                                                            checksum: checksum
+    ))
+    storage_adapter.update_metadata(file: file, metadata_resource: file_characterization_attributes)
+    file.metadata_resource = file_characterization_attributes
+    file
+  end
+
+  def old_resource
+    file.metadata_resource || FileCharacterizationAttributes.new
   end
 
   # Provides the SHA256 hexdigest string for the file
@@ -37,16 +41,10 @@ class TikaFileCharacterizationService
     "[#{RubyTikaApp.new(filename.to_s).to_json.gsub('}{', '},{')}]"
   end
 
-  # Determines the location of the file on disk for the file_node
+  # Determines the location of the file on disk for the file
   # @return Pathname
   def filename
-    return Pathname.new(file_object.io.path) if file_object.io.respond_to?(:path) && File.exist?(file_object.io.path)
-  end
-
-  # Provides the file attached to the file_node
-  # @return Valkyrie::FileRepository::File
-  def file_object
-    @file_object ||= Valkyrie::StorageAdapter.find_by(id: @file_node.file_identifiers[0])
+    return Pathname.new(file.io.path) if file.io.respond_to?(:path) && File.exist?(file.io.path)
   end
 
   def valid?
@@ -54,10 +52,13 @@ class TikaFileCharacterizationService
   end
 
   # Class for updating characterization attributes on the FileNode
-  class FileCharacterizationAttributes < Dry::Struct
-    attribute :width, Valkyrie::Types::Int
-    attribute :height, Valkyrie::Types::Int
-    attribute :mime_type, Valkyrie::Types::String
-    attribute :checksum, Valkyrie::Types::String
+  class FileCharacterizationAttributes < Valkyrie::Resource
+    attribute :width, Valkyrie::Types::Set.member(Valkyrie::Types::Coercible::Int)
+    attribute :height, Valkyrie::Types::Set.member(Valkyrie::Types::Coercible::Int)
+    attribute :mime_type, Valkyrie::Types::Set
+    attribute :label, Valkyrie::Types::Set
+    attribute :original_filename, Valkyrie::Types::Set
+    attribute :use, Valkyrie::Types::Set
+    attribute :checksum, Valkyrie::Types::Set
   end
 end

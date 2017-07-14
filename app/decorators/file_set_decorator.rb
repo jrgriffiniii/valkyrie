@@ -3,6 +3,6 @@ class FileSetDecorator < ApplicationDecorator
   delegate_all
 
   def download_id
-    member_ids.first
+    id
   end
 end

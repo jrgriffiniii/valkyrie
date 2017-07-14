@@ -12,11 +12,14 @@ module Valkyrie
          end
     # Used for casting {Valkyrie::Resources} if possible.
     Anything = Valkyrie::Types::Any.constructor do |value|
-      if value.respond_to?(:fetch) && value.fetch(:internal_resource, nil)
+      if value.respond_to?(:fetch) && value.is_a?(::Hash) && value.fetch(:internal_resource, nil)
         value.fetch(:internal_resource).constantize.new(value)
       else
         value
       end
+    end
+    SingularAnything = Valkyrie::Types::Any.constructor do |value|
+      Valkyrie::Types::Anything[Array(value).first]
     end
     # Represents an array of unique values.
     Set = Valkyrie::Types::Coercible::Array.constructor do |value|

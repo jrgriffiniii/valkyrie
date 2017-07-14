@@ -18,12 +18,14 @@ class ImageDerivativeService
       ::ImageDerivativeService.new(change_set: change_set, original_file: original_file(change_set), change_set_persister: change_set_persister, image_config: image_config, use: use)
     end
 
-    def original_file(resource)
-      members(resource).find { |x| x.use.include?(Valkyrie::Vocab::PCDMUse.OriginalFile) }
+    def original_file(model)
+      files(model).find { |x| x.metadata_resource.use.include?(Valkyrie::Vocab::PCDMUse.OriginalFile) }
     end
 
-    def members(resource)
-      metadata_adapter.query_service.find_members(resource: resource)
+    def files(model)
+      model.file_identifiers.map do |id|
+        Valkyrie::StorageAdapter.find_by(id: id)
+      end
     end
 
     class ImageConfig < Dry::Struct
@@ -37,7 +39,6 @@ class ImageDerivativeService
   attr_reader :change_set, :original_file, :image_config, :use, :change_set_persister
   delegate :metadata_adapter, :storage_adapter, to: :change_set_persister
   delegate :width, :height, :format, :output_name, to: :image_config
-  delegate :mime_type, to: :original_file
   delegate :persister, to: :metadata_adapter
   def initialize(change_set:, original_file:, change_set_persister:, image_config:, use:)
     @change_set = change_set
@@ -49,6 +50,10 @@ class ImageDerivativeService
 
   def image_mime_type
     image_config.mime_type
+  end
+
+  def mime_type
+    original_file.metadata_resource.mime_type
   end
 
   def create_derivatives
@@ -75,11 +80,7 @@ class ImageDerivativeService
   def cleanup_derivatives; end
 
   def filename
-    return Pathname.new(file_object.io.path) if file_object.io.respond_to?(:path) && File.exist?(file_object.io.path)
-  end
-
-  def file_object
-    @file_object ||= Valkyrie::StorageAdapter.find_by(id: original_file.file_identifiers[0])
+    return Pathname.new(original_file.io.path) if original_file.io.respond_to?(:path) && File.exist?(original_file.io.path)
   end
 
   def temporary_output

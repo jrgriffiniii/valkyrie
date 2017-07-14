@@ -45,12 +45,11 @@ RSpec.describe ImageDerivativeService do
     derivative_service.new(valid_change_set).create_derivatives
 
     reloaded = query_service.find_by(id: valid_resource.id)
-    members = query_service.find_members(resource: reloaded)
-    derivative = members.find { |x| x.use.include?(Valkyrie::Vocab::PCDMUse.ServiceFile) }
+    members = reloaded.file_identifiers.map { |x| Valkyrie::StorageAdapter.find_by(id: x) }
+    derivative = members.find { |x| x.metadata_resource.use.include?(Valkyrie::Vocab::PCDMUse.ServiceFile) }
 
     expect(derivative).to be_present
-    derivative_file = Valkyrie::StorageAdapter.find_by(id: derivative.file_identifiers.first)
-    image = MiniMagick::Image.open(derivative_file.io.path)
+    image = MiniMagick::Image.open(derivative.io.path)
     expect(image.width).to eq 105
     expect(image.height).to eq 150
   end

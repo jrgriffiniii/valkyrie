@@ -33,7 +33,9 @@ module Valkyrie::Persistence::Solr
       end
 
       def resource
-        resource_klass.new(attributes.symbolize_keys)
+        resource_klass.new(
+          attributes.symbolize_keys
+        )
       end
 
       def resource_klass
@@ -125,6 +127,7 @@ module Valkyrie::Persistence::Solr
           calling_mapper.for(value.value).result
         end
       end
+
       class EnumerableValue < ::Valkyrie::ValueMapper
         SolrValue.register(self)
         def self.handles?(value)
@@ -170,11 +173,51 @@ module Valkyrie::Persistence::Solr
         end
 
         def result
-          JSON.parse(json, symbolize_names: true)
+          NestedResourceBuilder.for(JSON.parse(json, symbolize_names: true)).result
         end
 
         def json
           value.gsub(/^serialized-/, '')
+        end
+      end
+
+      class NestedResourceBuilder < ::Valkyrie::ValueMapper
+      end
+
+      class NestedURIValue < ::Valkyrie::ValueMapper
+        NestedResourceBuilder.register(self)
+        def self.handles?(value)
+          value.is_a?(Hash) && value[:@id]
+        end
+
+        def result
+          RDF::URI(value[:@id])
+        end
+      end
+
+      class HashValue < ::Valkyrie::ValueMapper
+        NestedResourceBuilder.register(self)
+        def self.handles?(value)
+          value.is_a?(Hash)
+        end
+
+        def result
+          Hash[value.map do |key, value|
+            [key, calling_mapper.for(value).result]
+          end]
+        end
+      end
+
+      class EnumerableNestedValue < ::Valkyrie::ValueMapper
+        NestedResourceBuilder.register(self)
+        def self.handles?(value)
+          value.is_a?(Array)
+        end
+
+        def result
+          value.map do |val|
+            calling_mapper.for(val).result
+          end
         end
       end
 

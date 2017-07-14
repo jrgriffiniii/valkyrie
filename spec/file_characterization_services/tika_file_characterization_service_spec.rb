@@ -23,8 +23,7 @@ RSpec.describe TikaFileCharacterizationService do
   end
   let(:book_members) { query_service.find_members(resource: book) }
   let(:valid_file_set) { book_members.first }
-  let(:valid_file_node) { adapter.query_service.find_members(resource: valid_file_set).first }
-
+  let(:valid_file) { Valkyrie::StorageAdapter.find_by(id: valid_file_set.file_identifiers.first) }
   before do
     output = '547c81b080eb2d7c09e363a670c46960ac15a6821033263867dd59a31376509c'
     ruby_mock = instance_double(Digest::SHA256, hexdigest: output)
@@ -32,46 +31,17 @@ RSpec.describe TikaFileCharacterizationService do
   end
 
   it 'characterizes a sample file' do
-    Valkyrie::FileCharacterizationService.for(file_node: valid_file_node, persister: persister).characterize
-  end
+    Valkyrie::FileCharacterizationService.for(file: valid_file, storage_adapter: storage_adapter).characterize
 
-  it 'sets the height attribute for a file_node on characterize ' do
-    t_file_node = valid_file_node
-    t_file_node.height = nil
-    new_file_node = Valkyrie::FileCharacterizationService.for(file_node: t_file_node, persister: persister).characterize(save: false)
-    expect(new_file_node.height).not_to be_empty
-  end
+    file = Valkyrie::StorageAdapter.find_by(id: valid_file.id)
+    resource = file.metadata_resource
 
-  it 'sets the width attribute for a file_node on characterize' do
-    t_file_node = valid_file_node
-    t_file_node.width = nil
-    new_file_node = Valkyrie::FileCharacterizationService.for(file_node: t_file_node, persister: persister).characterize(save: false)
-    expect(new_file_node.width).not_to be_empty
-  end
-
-  it 'saves to the persister by default on characterize' do
-    allow(persister).to receive(:save).and_return(valid_file_node)
-    Valkyrie::FileCharacterizationService.for(file_node: valid_file_node, persister: persister).characterize
-    expect(persister).to have_received(:save).once
-  end
-
-  it 'does not save to the persister when characterize is called with save false' do
-    allow(persister).to receive(:save).and_return(valid_file_node)
-    Valkyrie::FileCharacterizationService.for(file_node: valid_file_node, persister: persister).characterize(save: false)
-    expect(persister).not_to have_received(:save)
-  end
-
-  it 'sets the mime_type for a file_node on characterize' do
-    t_file_node = valid_file_node
-    t_file_node.mime_type = nil
-    new_file_node = Valkyrie::FileCharacterizationService.for(file_node: t_file_node, persister: persister).characterize(save: false)
-    expect(new_file_node.mime_type).not_to be_empty
-  end
-
-  it 'sets the checksum for a file_node on characterize' do
-    t_file_node = valid_file_node
-    t_file_node.checksum = nil
-    new_file_node = Valkyrie::FileCharacterizationService.for(file_node: t_file_node, persister: persister).characterize(save: false)
-    expect(new_file_node.checksum).not_to be_empty
+    expect(resource.height).to eq [287]
+    expect(resource.width).to eq [200]
+    expect(resource.mime_type).to eq ["image/tiff"]
+    expect(resource.label).to eq ["example.tif"]
+    expect(resource.original_filename).to eq ["example.tif"]
+    expect(resource.checksum).to eq ['547c81b080eb2d7c09e363a670c46960ac15a6821033263867dd59a31376509c']
+    expect(resource.use).to eq [Valkyrie::Vocab::PCDMUse.OriginalFile]
   end
 end

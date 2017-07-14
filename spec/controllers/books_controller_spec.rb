@@ -24,19 +24,18 @@ RSpec.describe BooksController do
       book = query_service.find_by(id: Valkyrie::ID.new(id))
       expect(book.member_ids).not_to be_blank
       file_set = query_service.find_members(resource: book).first
-      files = query_service.find_members(resource: file_set)
-      file = files.find { |x| x.use.include?(Valkyrie::Vocab::PCDMUse.OriginalFile) }
+      files = file_set.file_identifiers.map { |x| Valkyrie::StorageAdapter.find_by(id: x) }
+      file = files.find { |x| x.metadata_resource.use.include?(Valkyrie::Vocab::PCDMUse.OriginalFile) }
 
-      expect(file.file_identifiers).not_to be_empty
-      expect(file.label).to contain_exactly "example.tif"
-      expect(file.original_filename).to contain_exactly "example.tif"
-      expect(file.mime_type).to contain_exactly "image/tiff"
-      expect(file.use).to contain_exactly Valkyrie::Vocab::PCDMUse.OriginalFile
+      expect(file.metadata_resource.mime_type).to contain_exactly "image/tiff"
+      expect(file.metadata_resource.label).to contain_exactly "example.tif"
+      expect(file.metadata_resource.original_filename).to contain_exactly "example.tif"
+      expect(file.metadata_resource.use).to contain_exactly Valkyrie::Vocab::PCDMUse.OriginalFile
+      expect(file.metadata_resource.width).to eq [200]
 
-      # Generate derivatives
-      derivative = files.find { |x| x.use.include?(Valkyrie::Vocab::PCDMUse.ServiceFile) }
+      derivative = files.find { |x| x.metadata_resource.use.include?(Valkyrie::Vocab::PCDMUse.ServiceFile) }
       expect(derivative).to be_present
-      expect(derivative.use).to include Valkyrie::Vocab::PCDMUse.ThumbnailImage
+      expect(derivative.metadata_resource.use).to include Valkyrie::Vocab::PCDMUse.ThumbnailImage
     end
   end
 

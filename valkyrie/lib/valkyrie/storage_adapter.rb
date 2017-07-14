@@ -37,9 +37,10 @@ module Valkyrie
       end
     end
 
-    class File < Dry::Struct
+    class File < Valkyrie::Resource
       attribute :id, Valkyrie::Types::Any
       attribute :io, Valkyrie::Types::Any
+      attribute :metadata_resource, Valkyrie::Types::SingularAnything
       delegate :size, :read, :rewind, to: :io
       def stream
         io

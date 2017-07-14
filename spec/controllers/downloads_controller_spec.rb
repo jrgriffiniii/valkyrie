@@ -6,20 +6,17 @@ RSpec.describe DownloadsController do
   before do
     sign_in user if user
   end
-  let(:persister) { Valkyrie.config.metadata_adapter.persister }
-  let(:storage_adapter) { Valkyrie.config.storage_adapter }
   let(:file) { fixture_file_upload('files/example.tif', 'image/tiff') }
+  let(:change_set_persister) { ChangeSetPersister.new(metadata_adapter: Valkyrie.config.metadata_adapter, storage_adapter: Valkyrie.config.storage_adapter) }
+  let(:change_set) { PageChangeSet.new(Page.new, files: [file]) }
+  let(:resource) { change_set_persister.save(change_set: change_set) }
+  let(:uploaded_file) { Valkyrie::StorageAdapter.find_by(id: file_set.file_identifiers.first) }
+  let(:file_set) { Valkyrie.config.metadata_adapter.query_service.find_members(resource: resource).first }
 
   describe "GET /downloads/:id" do
-    context "when there's a FileNode with that ID" do
-      let(:uploaded_file) { storage_adapter.upload(file: file, resource: file_node) }
-      let(:file_node) { persister.save(resource: FileNode.new(mime_type: file.content_type, original_filename: file.original_filename)) }
-      before do
-        file_node.file_identifiers = uploaded_file.id
-        persister.save(resource: file_node)
-      end
+    context "when there's a FileSet with that ID" do
       it "returns it" do
-        get :show, params: { id: file_node.id.to_s }
+        get :show, params: { id: file_set.id.to_s }
 
         uploaded_file.rewind
 

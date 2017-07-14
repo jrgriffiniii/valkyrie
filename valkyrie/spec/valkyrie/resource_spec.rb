@@ -18,6 +18,12 @@ RSpec.describe Valkyrie::Resource do
     end
   end
 
+  it "can set properties and they're reflected in attributes" do
+    resource.title = "Testing"
+
+    expect(resource.attributes[:title]).to eq ["Testing"]
+  end
+
   describe "#has_attribute?" do
     it "returns true for fields that exist" do
       expect(resource.has_attribute?(:title)).to eq true

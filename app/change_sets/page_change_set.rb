@@ -4,6 +4,7 @@ class PageChangeSet < Valkyrie::ChangeSet
   self.fields = Page.fields - [:id, :internal_resource, :created_at, :updated_at]
   property :viewing_hint, multiple: false
   property :title, required: true
+  property :files, virtual: true, multiple: true
 
   private
 

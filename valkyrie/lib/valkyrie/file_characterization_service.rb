@@ -13,15 +13,15 @@ module Valkyrie
     # @param file_node [FileNode] the FileNode to be characterized
     # @param persister [AppendingPersister] the Persister used to save the FileNode
     # @return [TikaFileCharacterizationService] the file characterization service, currently only TikaFileCharacterizationService is implemented
-    def self.for(file_node:, persister:)
-      services.map { |service| service.new(file_node: file_node, persister: persister) }.find(&:valid?) ||
-        new(file_node: file_node, persister: persister)
+    def self.for(file:, storage_adapter:)
+      services.map { |service| service.new(file: file, storage_adapter: storage_adapter) }.find(&:valid?) ||
+        new(file: file, storage_adapter: storage_adapter)
     end
-    attr_reader :file_node, :persister
-    delegate :mime_type, :height, :width, :checksum, to: :file_node
-    def initialize(file_node:, persister:)
-      @file_node = file_node
-      @persister = persister
+    attr_reader :file, :storage_adapter
+    delegate :mime_type, :height, :width, to: :file_node
+    def initialize(file:, storage_adapter:)
+      @file = file
+      @storage_adapter = storage_adapter
     end
 
     # characterizes the file_node passed into this service
@@ -29,9 +29,8 @@ module Valkyrie
     #   save: true
     # @param save [Boolean] should the persister save the file_node after Characterization
     # @return [FileNode]
-    def characterize(save: true)
-      persister.save(resource: @file_node) if save
-      @file_node
+    def characterize
+      file
     end
 
     # Stub function that sets this service as valid for all FileNode types

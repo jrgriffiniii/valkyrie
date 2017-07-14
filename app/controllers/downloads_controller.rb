@@ -16,7 +16,7 @@ class DownloadsController < ApplicationController
 
   def load_file
     binary_file = storage_adapter.find_by(id: file_identifier)
-    FileWithMetadata.new(id: file_identifier, file: binary_file, mime_type: asset.mime_type, original_name: asset.original_filename.first)
+    FileWithMetadata.new(id: file_identifier, file: binary_file, mime_type: binary_file.metadata_resource.mime_type, original_name: binary_file.metadata_resource.original_filename)
   end
 
   # Customize the :download ability in your Ability class, or override this method

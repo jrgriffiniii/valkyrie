@@ -28,11 +28,6 @@ Rails.application.config.to_prepare do
   )
 
   Valkyrie::StorageAdapter.register(
-    Valkyrie::Storage::Disk.new(base_path: Rails.root.join("tmp", "files")),
-    :disk
-  )
-
-  Valkyrie::StorageAdapter.register(
     Valkyrie::Storage::Memory.new,
     :memory
   )
@@ -43,6 +38,14 @@ Rails.application.config.to_prepare do
       index_adapter: Valkyrie::MetadataAdapter.find(:index_solr)
     ),
     :indexing_persister
+  )
+
+  Valkyrie::StorageAdapter.register(
+    Valkyrie::Storage::Disk.new(
+      base_path: Rails.root.join("tmp", "files"),
+      metadata_adapter: Valkyrie::MetadataAdapter.find(:indexing_persister)
+    ),
+    :disk
   )
 
   # ImageDerivativeService needs its own change_set_persister because the

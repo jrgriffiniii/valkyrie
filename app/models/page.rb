@@ -4,4 +4,5 @@ class Page < Valkyrie::Resource
   attribute :id, Valkyrie::Types::ID.optional
   attribute :title, Valkyrie::Types::Set
   attribute :viewing_hint, Valkyrie::Types::Set
+  attribute :member_ids, Valkyrie::Types::Array
 end

@@ -9,9 +9,14 @@ module Valkyrie::Storage
     # @param file [IO]
     # @param resource [Valkyrie::Resource]
     # @return [Valkyrie::StorageAdapter::File]
-    def upload(file:, resource: nil)
-      identifier = Valkyrie::ID.new("memory://#{resource.id}")
-      cache[identifier] = Valkyrie::StorageAdapter::File.new(id: identifier, io: file)
+    def upload(file:, resource: nil, metadata_resource: nil)
+      identifier = Valkyrie::ID.new("memory://#{resource.id}/#{file.original_filename}")
+      cache[identifier] = Valkyrie::StorageAdapter::File.new(id: identifier, io: file, metadata_resource: metadata_resource)
+    end
+
+    def update_metadata(file:, metadata_resource:)
+      file.metadata_resource = metadata_resource
+      cache[file.id] = file
     end
 
     # Return the file associated with the given identifier
