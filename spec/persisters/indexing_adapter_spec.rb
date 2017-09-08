@@ -4,7 +4,7 @@ require 'valkyrie/specs/shared_specs'
 
 RSpec.describe IndexingAdapter do
   let(:adapter) do
-    described_class.new(metadata_adapter: Valkyrie::Persistence::Memory::MetadataAdapter.new,
+    described_class.new(metadata_adapter: Valkyrie.config.metadata_adapter,
                         index_adapter: index_solr)
   end
   let(:query_service) { adapter.query_service }
@@ -28,5 +28,12 @@ RSpec.describe IndexingAdapter do
       buffered_adapter.persister.delete(resource: another_one)
     end
     expect(index_solr.query_service.find_all.to_a.length).to eq 0
+  end
+
+  it "can query for a depositor" do
+    persister.save(resource: Book.new(depositor: "tpend"))
+    persister.save(resource: Book.new(depositor: "someone"))
+    output = query_service.custom_queries.find_by_depositor(depositor: "tpend").to_a
+    expect(output.to_a.length).to eq 1
   end
 end

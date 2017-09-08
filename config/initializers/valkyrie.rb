@@ -56,4 +56,9 @@ Rails.application.config.to_prepare do
   )
 
   Valkyrie::FileCharacterizationService.services << TikaFileCharacterizationService
+
+  # This is lame.
+  Valkyrie::MetadataAdapter.find(:memory).query_service.custom_queries.register_query_handler(FindByDepositor::Memory)
+  Valkyrie::MetadataAdapter.find(:postgres).query_service.custom_queries.register_query_handler(FindByDepositor::Postgres)
+  Valkyrie::MetadataAdapter.find(:fedora).query_service.custom_queries.register_query_handler(FindByDepositor::ActiveFedora)
 end

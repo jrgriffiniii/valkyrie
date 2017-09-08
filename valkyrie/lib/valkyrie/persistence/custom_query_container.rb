@@ -12,8 +12,9 @@ module Valkyrie::Persistence
     end
 
     def method_missing(meth_name, *args, &block)
-      query_handler = find_query_handler(meth_name).new(query_service: query_service)
+      query_handler = find_query_handler(meth_name)
       return super unless query_handler
+      query_handler = query_handler.new(query_service: query_service)
       query_handler.__send__(meth_name, *args, &block)
     end
 

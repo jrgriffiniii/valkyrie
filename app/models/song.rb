@@ -10,4 +10,5 @@ class Song < Valkyrie::Resource
   attribute :thumbnail_id, Valkyrie::Types::Set
   attribute :representative_id, Valkyrie::Types::Set
   attribute :start_canvas, Valkyrie::Types::Set
+  attribute :depositor
 end
