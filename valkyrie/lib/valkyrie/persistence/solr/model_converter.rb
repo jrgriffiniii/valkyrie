@@ -21,6 +21,11 @@ module Valkyrie::Persistence::Solr
       "id-#{resource.id}"
     end
 
+    # @return [String] The solr document ID
+    def alternate_identifier
+      "id-#{resource.alternate_identifier}"
+    end
+
     # @return [String] ISO-8601 timestamp in UTC of the created_at for this solr
     #   document.
     def created_at

@@ -25,6 +25,7 @@ RSpec.shared_examples 'a Valkyrie query provider' do
   it { is_expected.to respond_to(:find_all).with(0).arguments }
   it { is_expected.to respond_to(:find_all_of_model).with_keywords(:model) }
   it { is_expected.to respond_to(:find_by).with_keywords(:id) }
+  it { is_expected.to respond_to(:find_by).with_keywords(:alternate_identifier) }
   it { is_expected.to respond_to(:find_members).with_keywords(:resource) }
   it { is_expected.to respond_to(:find_references_by).with_keywords(:resource, :property) }
   it { is_expected.to respond_to(:find_inverse_references_by).with_keywords(:resource, :property) }
@@ -59,6 +60,14 @@ RSpec.shared_examples 'a Valkyrie query provider' do
     end
     it "returns a Valkyrie::Persistence::ObjectNotFoundError for a non-found ID" do
       expect { query_service.find_by(id: "123123123") }.to raise_error ::Valkyrie::Persistence::ObjectNotFoundError
+    end
+    it "returns a resource by alternate id" do
+      resource = persister.save(resource: resource_class.new(alternate_identifier: 'alternate'))
+
+      expect(query_service.find_by(alternate_identifier: resource.alternate_identifier).alternate_identifier).to eq resource.alternate_identifier
+    end
+    it "returns a Valkyrie::Persistence::ObjectNotFoundError for a non-found Alternate Identifier" do
+      expect { query_service.find_by(alternate_identifier: "123123123") }.to raise_error ::Valkyrie::Persistence::ObjectNotFoundError
     end
   end
 

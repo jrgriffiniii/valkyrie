@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170531004548) do
+ActiveRecord::Schema.define(version: 20170916174616) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,8 @@ ActiveRecord::Schema.define(version: 20170531004548) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "internal_resource"
+    t.string "alternate_identifier"
+    t.index ["alternate_identifier"], name: "index_orm_resources_on_alternate_identifier", unique: true
     t.index ["metadata"], name: "index_orm_resources_on_metadata", using: :gin
   end
 

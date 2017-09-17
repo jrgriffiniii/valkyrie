@@ -24,8 +24,12 @@ module Valkyrie::Persistence::Postgres
     end
 
     # (see Valkyrie::Persistence::Memory::QueryService#find_by)
-    def find_by(id:)
-      resource_factory.to_resource(object: orm_class.find(id))
+    def find_by(id: nil, alternate_identifier: nil)
+      if id
+        resource_factory.to_resource(object: orm_class.find(id))
+      elsif alternate_identifier
+        resource_factory.to_resource(object: orm_class.find_by!(alternate_identifier: alternate_identifier.to_param))
+      end
     rescue ActiveRecord::RecordNotFound
       raise Valkyrie::Persistence::ObjectNotFoundError
     end

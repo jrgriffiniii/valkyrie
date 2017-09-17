@@ -13,8 +13,14 @@ module Valkyrie::Persistence::Memory
     # @raise [Valkyrie::Persistence::ObjectNotFoundError] Raised when the ID
     #   isn't in the persistence backend.
     # @return [Valkyrie::Resource] The object being searched for.
-    def find_by(id:)
-      cache[id] || raise(::Valkyrie::Persistence::ObjectNotFoundError)
+    def find_by(id: nil, alternate_identifier: nil)
+      resource = if id
+                   cache[id]
+                 elsif alternate_identifier 
+                   cache.select{|key, resource| resource['alternate_identifier'] == alternate_identifier }.values.first
+                 end
+
+      resource || raise(::Valkyrie::Persistence::ObjectNotFoundError) 
     end
 
     # @return [Array<Valkyrie::Resource>] All objects in the persistence backend.

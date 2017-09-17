@@ -11,8 +11,12 @@ module Valkyrie::Persistence::Solr
     end
 
     # (see Valkyrie::Persistence::Memory::QueryService#find_by)
-    def find_by(id:)
-      Valkyrie::Persistence::Solr::Queries::FindByIdQuery.new(id, connection: connection, resource_factory: resource_factory).run
+    def find_by(id: nil, alternate_identifier: nil)
+      if id
+        Valkyrie::Persistence::Solr::Queries::FindByIdQuery.new(id, connection: connection, resource_factory: resource_factory).run
+      elsif alternate_identifier
+        Valkyrie::Persistence::Solr::Queries::FindByAlternateIdQuery.new(alternate_identifier, connection: connection, resource_factory: resource_factory).run
+      end
     end
 
     # (see Valkyrie::Persistence::Memory::QueryService#find_all)

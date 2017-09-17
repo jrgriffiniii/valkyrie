@@ -17,6 +17,7 @@ module Valkyrie
     def self.inherited(subclass)
       ::Dry::Struct.inherited(subclass)
       subclass.constructor_type :schema
+      subclass.attribute :alternate_identifier, Valkyrie::Types::ID.optional
       subclass.attribute :internal_resource, Valkyrie::Types::Any.default(subclass.to_s)
       subclass.attribute :created_at, Valkyrie::Types::DateTime.optional
       subclass.attribute :updated_at, Valkyrie::Types::DateTime.optional

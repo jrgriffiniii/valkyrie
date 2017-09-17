@@ -14,7 +14,7 @@ RSpec.describe Valkyrie::Resource do
   subject(:resource) { Resource.new }
   describe "#fields" do
     it "returns all configured fields as an array of symbols" do
-      expect(Resource.fields).to eq [:internal_resource, :created_at, :updated_at, :id, :title]
+      expect(Resource.fields).to match_array([:internal_resource, :created_at, :updated_at, :id, :alternate_identifier, :title])
     end
   end
 

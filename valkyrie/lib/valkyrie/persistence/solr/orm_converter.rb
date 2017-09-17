@@ -25,7 +25,7 @@ module Valkyrie::Persistence::Solr
     end
 
     def attributes
-      attribute_hash.merge("id" => id, internal_resource: internal_resource, created_at: created_at, updated_at: updated_at)
+      attribute_hash.merge("id" => id, alternate_identifier: alternate_identifier, internal_resource: internal_resource, created_at: created_at, updated_at: updated_at)
     end
 
     def created_at
@@ -38,6 +38,10 @@ module Valkyrie::Persistence::Solr
 
     def id
       solr_document["id"].gsub(/^id-/, '')
+    end
+
+    def alternate_identifier
+      solr_document["alternate_identifier_ssim"].try(:first).try(:gsub, /^id-/, '')
     end
 
     def attribute_hash
