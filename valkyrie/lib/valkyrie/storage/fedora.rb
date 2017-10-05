@@ -20,8 +20,7 @@ module Valkyrie::Storage
     def find_by(id:)
       Valkyrie::StorageAdapter::StreamFile.new(id: id, io: response(id: id))
     rescue ::Ldp::Gone
-      Valkyrie.logger.warn "Unable to find Fedora file with id #{id}"
-      nil
+      raise Valkyrie::StorageAdapter::FileNotFound
     end
 
     # @param file [IO]
@@ -65,6 +64,7 @@ module Valkyrie::Storage
       # @return [IOProxy]
       def response(id:)
         af_file = ActiveFedora::File.new(active_fedora_identifier(id: id))
+        raise Valkyrie::StorageAdapter::FileNotFound if af_file.ldp_source.new?
         IOProxy.new(af_file.ldp_source, af_file.size)
       end
 

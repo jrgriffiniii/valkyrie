@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 module Valkyrie
   class StorageAdapter
+    class FileNotFound < StandardError; end
     class_attribute :storage_adapters
     self.storage_adapters = {}
     class << self

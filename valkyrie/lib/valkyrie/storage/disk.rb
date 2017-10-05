@@ -33,11 +33,9 @@ module Valkyrie::Storage
     # @return [Valkyrie::StorageAdapter::File]
     # @return [nil] if nothing is found
     def find_by(id:)
-      return unless handles?(id: id)
       Valkyrie::StorageAdapter::File.new(id: Valkyrie::ID.new(id.to_s), io: ::File.open(file_path(id), 'rb'))
     rescue Errno::ENOENT
-      Valkyrie.logger.warn "File not found on disk for #{id}"
-      nil
+      raise Valkyrie::StorageAdapter::FileNotFound
     end
 
     # Delete the file on disk associated with the given identifier.
