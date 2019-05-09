@@ -76,6 +76,14 @@ workflows:
           ruby: 2.6.2
           name: "Ruby2-6_Rails5-1"
       - build:
+          gemfile: "gemfiles/activerecord_5_0.gemfile"
+          ruby: 2.6.2
+          name: "Ruby2-6_Rails5-0"
+      - build:
+          gemfile: "gemfiles/activerecord_4_2.gemfile"
+          ruby: 2.6.2
+          name: "Ruby2-6_Rails4-2"
+      - build:
           gemfile: "gemfiles/activerecord_5_2.gemfile"
           ruby: 2.5.5
           name: "Ruby2-5_Rails5-2"
@@ -108,6 +116,14 @@ workflows:
           gemfile: "gemfiles/activerecord_5_1.gemfile"
           ruby: 2.6.2
           name: "Ruby2-6_Rails5-1"
+      - build:
+          gemfile: "gemfiles/activerecord_5_0.gemfile"
+          ruby: 2.6.2
+          name: "Ruby2-6_Rails5-0"
+      - build:
+          gemfile: "gemfiles/activerecord_4_2.gemfile"
+          ruby: 2.6.2
+          name: "Ruby2-6_Rails4-2"
       - build:
           gemfile: "gemfiles/activerecord_5_2.gemfile"
           ruby: 2.5.5
